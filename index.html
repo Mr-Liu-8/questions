@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西部机场集团第十三届职工岗位(气象)职业技能大赛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #87CEEB 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            background: transparent;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 40px;
+            text-align: center;
+            flex-shrink: 0;
+            border-bottom: 2px solid rgba(135, 206, 235, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .start-btn {
+            background: #FFD700;
+            color: #333;
+            flex: 1;
+        }
+        
+        .start-btn:hover {
+            background: #FFC700;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .reset-btn {
+            background: #f0f0f0;
+            color: #666;
+            flex: 1;
+        }
+        
+        .reset-btn:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .left-panel {
+            flex: 0 0 350px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-right: 3px solid rgba(135, 206, 235, 0.3);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+        
+        .question-number {
+            font-size: 180px;
+            font-weight: bold;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            line-height: 1;
+        }
+        
+        .drawn-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .drawn-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .drawn-list {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.8;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .right-panel {
+            flex: 1;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+        }
+        
+        .question-content {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+        }
+        
+        .question-content.active {
+            display: flex;
+        }
+        
+        .question-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        
+        .question-image-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .question-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-message {
+            text-align: center;
+            color: #999;
+            font-size: 24px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .empty-state h2 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state p {
+            color: #666;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>西部机场集团第十三届职工岗位(气象)职业技能大赛</h1>
+        </div>
+        
+        <div class="content">
+            <div class="left-panel">
+                <div class="question-number" id="currentNumber">?</div>
+                <div class="drawn-section">
+                    <div class="drawn-label">已抽取：</div>
+                    <div class="drawn-list" id="drawnList">无</div>
+                </div>
+                <div class="button-group">
+                    <button class="start-btn" onclick="drawQuestion()">开始</button>
+                    <button class="reset-btn" onclick="resetHistory()">清除抽取历史</button>
+                </div>
+            </div>
+            
+            <div class="right-panel" id="rightPanel">
+                <div class="welcome-message">
+                    <p>点击"开始"按钮抽取题目</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {"number": 1, "question": "修正海平面气压在着陆时的用途是什么？修正海平面气压少报 10hPa和多报 10hPa,飞机降落时会发生什么后果?（10M/ HPA）", "image": "q1.png"},
+            {"number": 2, "question": "实际工作中，您是如何通过雷达回波判断机场未来降水天气？", "image": "q2.png"},
+            {"number": 3, "question": "西安咸阳国际机场飞行区管理委员会办公室于2021年4月25日下发了《安全警示》，我们学习后请您从气象学角度分析产生此类现象的原因。作为气象观测员和自动气象观测系统维护人员，我们应该注重做哪些方面的工作？", "image": "q3.png"},
+            {"number": 4, "question": "请按照地域划分说出西北地区目前运营的民用机场名称及机场四字代码，至少10个机场以上，并说明他们属于哪个情报交换区，代码是什么？", "image": "q4.png"},
+            {"number": 5, "question": "中国境内海拔最高的机场是哪个机场？西北地区哪些机场属于高原机场？（西北地区哪些机场属于高高原机场？西北地区海拔最高的机场是哪个机场？西北地区跑道最长的机场是哪个？", "image": "q5.jpg"},
+            {"number": 6, "question": "机场跑道灯光系统包含哪些？机场跑道灯光等级一般设为几级？一般指边线灯还是跑道中心线灯？自动观测系统灯光设置调整参数主要参考哪一级进行设置？", "image": "q6.png"},
+            {"number": 7, "question": "民航气象监视台是什么机构？其职责有哪些？全国共有哪几个监视台？西北地区气象监视台设在哪个机场？", "image": "q7.png"},
+            {"number": 8, "question": "导致西安\"6、6空难\"和伊春\"8、24空难\"的直接原因分别是什么？当时的天气背景分别是什么？气象部门服务是否到位？我们从中应该吸取的教训是什么？", "image": "q8.png"},
+            {"number": 9, "question": "机场飞行区等级是如何划分的？请说出您所在机场的机场等级？", "image": "q9.png"},
+            {"number": 10, "question": "中华人民共和国领域内民用航空生产经营活动的安全管理的工作方针是什么？监督管理职责是如何划分的？", "image": "q10.png"},
+            {"number": 11, "question": "根据《中国民用航空气象工作规则》相关要求，机场气象台应当履行什么职责？", "image": "q11.png"},
+            {"number": 13, "question": "根据《西部机场集团空管运行不安全事件标准》，由于气象责任原因，造成哪些事件，视为气象严重差错（不构成事故征候（含）以上的）？", "image": "q13.png"},
+            {"number": 14, "question": "根据《西部机场集团空管运行不安全事件标准》，由于气象责任原因，造成哪些事件，视为气象一般差错（不构成严重差错（含）以上的）？", "image": "q14.png"},
+            {"number": 15, "question": "民用航空气象服务机构的运行手册至少包括哪些内容:", "image": "q15.png"},
+            {"number": 16, "question": "为什么飞机采用逆风起降? 如果逆风超过一定限度会产生什么后果? 侧风对飞机起降有什么影响？", "image": "q16.png"},
+            {"number": 17, "question": "标准大气的具体标准是什么？", "image": "q17.jpg"},
+            {"number": 18, "question": "谚语\"久晴西风雨，久雨西风晴\"的道理是什么?", "image": "q18.jpg"},
+            {"number": 19, "question": "简述本部门复杂天气的工作流程。", "image": "q19.jpg"},
+            {"number": 20, "question": "简述本部门发报系统故障时的应急处置预案。", "image": "q20.jpg"},
+            {"number": 21, "question": "简述本部门风切变天气的判断依据和服务流程。", "image": "q21.jpg"},
+            {"number": 22, "question": "简述本部门机场警报的发布内容和发布流程。", "image": "q22.jpg"},
+            {"number": 23, "question": "简述本部门主要的气象服务用户及服务内容。", "image": "q23.jpg"},
+            {"number": 24, "question": "简述本部门主要的气象服务产品及服务方式。", "image": "q24.jpg"},
+            {"number": 25, "question": "在日常工作中，遇到下面情况----FC TAF 0615（UTC）报没有预报雷暴，而07(UTC)时突然出现雷暴，根据预报规范及本部门运行手册，你该如何处理接下来的工作？", "image": "q25.jpg"},
+            {"number": 26, "question": "请您简述低空风切变的定义、分类以及对航空器的影响。", "image": "q26.png"},
+            {"number": 27, "question": "假设今日14时20分您收到了MU2341航班在05号跑道五边2公里处300英尺高度遭遇了低空风切变的话音方式航空器报告，请问您应如何处置？", "image": "q27.jpg"},
+            {"number": 28, "question": "请您简述产生雷暴天气的基本条件并介绍贵机场的预报经验。", "image": "q28.jpg"},
+            {"number": 29, "question": "请您简述辐射雾和平流雾的形成原因并介绍贵机场的预报经验", "image": "q29.jpg"},
+            {"number": 30, "question": "假设您在发布0009的航站预报后发现在数据库无法检索到相应报文，请问您应如何处置？", "image": "q30.png"},
+            {"number": 31, "question": "假设今日有专机任务，20时从贵机场起飞，22时抵达首都机场，请简述保障流程。", "image": "q31.jpg"},
+            {"number": 32, "question": "假设MU1707航班预计11时从贵机场起飞前往上海，请问您应提供哪些飞行气象文件？", "image": "q32.jpg"},
+            {"number": 33, "question": "根据《民用航空气象预报规范》要求，哪些天气应发布机场警报，贵机场的警报发布标准有哪些？", "image": "q33.jpg"},
+            {"number": 34, "question": "请您简述航空器积冰的种类和产生积冰的有利条件。", "image": "q34.jpg"},
+            {"number": 35, "question": "\"XX气象台您好，我是通航8868机组执行XX至西安调机任务，起飞时间5月5日19时，飞行高度3000米，机型为直-9，需要咨询航路天气\"。", "image": "q35.jpg"}
+        ];
+        
+        let drawnQuestions = [];
+        
+        // 页面加载时初始化
+        loadDrawnHistory();
+        
+        // 从localStorage加载已抽取历史
+        function loadDrawnHistory() {
+            const saved = localStorage.getItem('drawnQuestions');
+            if (saved) {
+                drawnQuestions = JSON.parse(saved);
+                updateDrawnList();
+            }
+        }
+        
+        // 保存已抽取历史到localStorage
+        function saveDrawnHistory() {
+            localStorage.setItem('drawnQuestions', JSON.stringify(drawnQuestions));
+        }
+        
+        // 抽取题目
+        function drawQuestion() {
+            if (questions.length === 0) {
+                alert('题目数据未加载完成，请稍候');
+                return;
+            }
+            
+            // 获取未抽取的题目
+            const remainingQuestions = questions.filter(q => !drawnQuestions.includes(q.number));
+            
+            if (remainingQuestions.length === 0) {
+                const rightPanel = document.getElementById('rightPanel');
+                rightPanel.innerHTML = `
+                    <div class="empty-state">
+                        <h2>🎉 所有题目已抽取完毕！</h2>
+                        <p>请点击"清除抽取历史"按钮重新开始</p>
+                    </div>
+                `;
+                document.getElementById('currentNumber').textContent = '✓';
+                return;
+            }
+            
+            // 随机选择一道题
+            const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
+            const selectedQuestion = remainingQuestions[randomIndex];
+            
+            // 添加到已抽取列表
+            drawnQuestions.push(selectedQuestion.number);
+            drawnQuestions.sort((a, b) => a - b);
+            saveDrawnHistory();
+            
+            // 更新显示
+            displayQuestion(selectedQuestion);
+            updateDrawnList();
+        }
+        
+        // 显示题目
+        function displayQuestion(question) {
+            const currentNumber = document.getElementById('currentNumber');
+            const rightPanel = document.getElementById('rightPanel');
+            
+            currentNumber.textContent = question.number;
+            
+            rightPanel.innerHTML = `
+                <div class="question-content active">
+                    <div class="question-title">
+                        ${question.number}. ${question.question}
+                    </div>
+                    ${question.image ? `
+                        <div class="question-image-container">
+                            <img src="images/${question.image}" alt="题目${question.number}图片" class="question-image">
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        // 更新已抽取列表
+        function updateDrawnList() {
+            const drawnList = document.getElementById('drawnList');
+            if (drawnQuestions.length === 0) {
+                drawnList.textContent = '无';
+            } else {
+                drawnList.textContent = drawnQuestions.join('、');
+            }
+        }
+        
+        // 清除抽取历史
+        function resetHistory() {
+            if (drawnQuestions.length === 0) {
+                alert('当前没有已抽取的题目');
+                return;
+            }
+            
+            if (confirm('确定要清除所有抽取历史吗？')) {
+                drawnQuestions = [];
+                saveDrawnHistory();
+                
+                document.getElementById('currentNumber').textContent = '?';
+                document.getElementById('rightPanel').innerHTML = `
+                    <div class="welcome-message">
+                        <p>点击"开始"按钮抽取题目</p>
+                    </div>
+                `;
+                updateDrawnList();
+            }
+        }
+    </script>
+</body>
+</html>
+
